@@ -50,6 +50,7 @@ export default function LoginPage() {
     let data = {};
     try {
       data = await res.json();
+      console.log("Login response:", data); 
     } catch {
       data = {};
     }
