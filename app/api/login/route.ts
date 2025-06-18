@@ -18,7 +18,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const res = NextResponse.json(
+    // ✅ Set the cookie
+    const cookieStore = cookies();
+    cookieStore.set("admin-auth", "true", {
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60 * 24, // 1 day
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return NextResponse.json(
       {
         success: true,
         message: "Login successful",
@@ -30,17 +40,6 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
-
-    // ✅ Set cookie via response object so it reaches middleware
-    res.cookies.set("admin-auth", "true", {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    return res;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
