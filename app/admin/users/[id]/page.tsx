@@ -24,7 +24,7 @@ interface Params {
 }
 
 async function getUserById(id: string): Promise<User | null> {
-  const res = await fetch(`/api/users/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${id}`, {
     cache: "no-store",
   });
 
