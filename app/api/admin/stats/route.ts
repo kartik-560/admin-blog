@@ -2,11 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-
-  if (process.env.VERCEL && process.env.NEXT_PHASE === "phase-production-build") {
-    return new NextResponse("Skipping API during build", { status: 200 });
-  }
-
+if (process.env.NEXT_RUNTIME === "edge") {
+  return new NextResponse("Skipping during Edge Runtime", { status: 200 });
+}
   try {
     const totalPosts = await prisma.post.count();
     const totalViews = await prisma.post.aggregate({
