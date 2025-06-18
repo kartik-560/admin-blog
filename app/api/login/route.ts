@@ -10,7 +10,6 @@ export async function POST(req: Request) {
     const admin = await prisma.admin.findUnique({
       where: { email },
     });
-
     if (!admin || admin.password !== password) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials" },
