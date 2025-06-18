@@ -24,7 +24,7 @@ interface Params {
 }
 
 async function getUserById(id: string): Promise<User | null> {
-  const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+  const res = await fetch(`/api/users/${id}`, {
     cache: "no-store",
   });
 
