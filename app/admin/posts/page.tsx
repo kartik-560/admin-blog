@@ -45,26 +45,30 @@ export default function PostsPage() {
 const [isLoading, setIsLoading] = useState(true);
 
  useEffect(() => {
-  const fetchPosts = async () => {
-    let data = [];
-    try {
-      setIsLoading(true);
-      const res = await fetch("/api/posts");
-      data = await res.json();
-      if (Array.isArray(data)) {
-        setPosts(data);
-      } else {
-        console.error("Expected array, got:", data);
-        setPosts([]);
-      }
-    } catch (err) {
-      console.error("Error fetching posts", err);
+ const fetchPosts = async () => {
+  try {
+    setIsLoading(true);
+    const res = await fetch("/api/posts");
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      const normalized = data.map((post) => ({
+        ...post,
+        id: post.id || post._id, // Ensure consistent ID
+      }));
+      setPosts(normalized);
+    } else {
+      console.error("Expected array, got:", data);
       setPosts([]);
-    } finally {
-      console.log("✅ Done fetching posts", data);
-      setIsLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Error fetching posts", err);
+    setPosts([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   fetchPosts();
 }, []);
@@ -111,11 +115,8 @@ const [isLoading, setIsLoading] = useState(true);
   };
 
 const handleDeletePost = async (postId: string) => {
-  console.log("Delete button clicked for post ID:", postId);
   if (
-    confirm(
-      "Are you sure you want to delete this post? This action cannot be undone."
-    )
+    confirm("Are you sure you want to delete this post? This action cannot be undone.")
   ) {
     try {
       const res = await fetch(`/api/posts/by-id/${postId}`, {
@@ -133,6 +134,7 @@ const handleDeletePost = async (postId: string) => {
     }
   }
 };
+
 
 
   return (
